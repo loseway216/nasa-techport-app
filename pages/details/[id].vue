@@ -1,6 +1,7 @@
 <template>
-  <div v-if="pending">loading</div>
-  {{ data?.acronym }}
+  <div>
+    {{ projectDetail?.title }}
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -14,22 +15,29 @@ definePageMeta({
     return /^\d+$/.test(route.params.id as string);
   },
 });
+const projectId = computed(() => Number(route.params.id));
 
 // init project detail
-const project = ref<Project>();
+const projectDetail = ref<Project>();
+const projectsMap = useState<Map<number, Project>>("projectsMap");
 
-//  request the project detail by id
-const { data, pending, error } = await useFetch<Project>(
-  `/api/projects/${route.params.id}`,
-  { lazy: true }
-);
-if (error.value) {
-  throw createError({
-    statusCode: error.value.statusCode,
-    message: error.value.message,
-  });
+// if the project detail is cached, use it
+if (projectsMap.value?.has(projectId.value)) {
+  projectDetail.value = projectsMap.value.get(projectId.value);
 }
-if (data.value) {
-  project.value = data.value;
+//  request the project detail by id if it's not cached
+else {
+  const { data, pending, error } = await useFetch<Project>(
+    `/api/projects/${route.params.id}`
+  );
+  if (error.value) {
+    throw createError({
+      statusCode: error.value.statusCode,
+      message: error.value.message,
+    });
+  }
+  if (data.value) {
+    projectDetail.value = data.value;
+  }
 }
 </script>

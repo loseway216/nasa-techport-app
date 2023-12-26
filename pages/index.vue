@@ -1,24 +1,27 @@
 <template>
-  <div>List</div>
-  <ul>
-    <div>{{ pagination.total }}</div>
-    <li v-for="project in projects" :key="project.projectId">
-      <NuxtLink :to="`/details/${project.projectId}`">{{
-        project.projectId
-      }}</NuxtLink>
-      {{ project.lastUpdated }}
-    </li>
-  </ul>
+  <div>
+    <ul>
+      <div>
+        <button class="button" @click="prevPage">prev</button>
+        <button @click="nextPage">next</button>
+        {{ `Listing ${startIndex} - ${endIndex} of ${pagination.total}` }}
+        {{ `Page ${pagination.current} of ${totalPage}` }}
+      </div>
+      <li v-for="project in projectsRenderList" :key="project.projectId">
+        <project-item :project="project" />
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { useProjectsStore } from "~/stores/projects";
-import type { Project, Projects } from "~/types";
+import type { Project } from "~/types";
 
-// init projects
-const projects = useState<Project[]>("projects", () => []);
-
-// init pagination
+// init projects map to cache projects data
+const projectsMap = useState<Map<number, Project>>(
+  "projectsMap",
+  () => new Map()
+);
 const pagination = useState("pagination", () => ({
   total: 0,
   current: 1,
@@ -28,35 +31,96 @@ const pagination = useState("pagination", () => ({
   // showTotal: (total: number) => `Total ${total} items`,
 }));
 
-// computed charts data
+// computed data
+const startIndex = computed(
+  () => (pagination.value.current - 1) * pagination.value.pageSize + 1
+);
+const endIndex = computed(() =>
+  pagination.value.current * pagination.value.pageSize > pagination.value.total
+    ? pagination.value.total
+    : pagination.value.current * pagination.value.pageSize
+);
+const totalPage = computed(() =>
+  Math.ceil(pagination.value.total / pagination.value.pageSize)
+);
 
-function setProjects(data: Projects) {
-  projects.value = data.projects;
-  pagination.value.total = data.totalCount;
+function prevPage() {
+  pagination.value.current = Math.max(pagination.value.current - 1, 1);
 }
-
-function updateProjects(data: Project) {
-  projects.value = projects.value.map((project) =>
-    project.projectId === data.projectId ? data : project
+function nextPage() {
+  pagination.value.current = Math.min(
+    pagination.value.current + 1,
+    totalPage.value
   );
 }
 
-// get projects id list in the last 7 days
-// const { data, error, pending } = await useFetch("/api/projects", {
-//   params: {
-//     updatedSince: "2023-12-20",
-//   },
-// });
-// if (error.value) {
-//   throw createError({
-//     statusCode: error.value.statusCode,
-//     message: error.value.message,
-//   });
-// }
-// if (data.value) {
-//   setProjects(data.value);
+// computed charts data
+
+// get projects list in the last 7 days
+// but /api/projects return almost nothing except id
+const {
+  data: projectsList,
+  error,
+  pending,
+} = await useFetch("/api/projects", {
+  params: {
+    updatedSince: "2023-12-20",
+  },
+});
+if (error.value) {
+  throw createError({
+    statusCode: error.value.statusCode,
+    message: error.value.message,
+  });
+}
+if (projectsList.value) {
+  pagination.value.current = 1;
+  pagination.value.total = projectsList.value.totalCount;
+}
+
+// function updateProjects(data: Project) {
+//   projects.value = projects.value.map((project) =>
+//     project.projectId === data.projectId ? data : project
+//   );
 // }
 
-const store = useProjectsStore();
-store.getProjects("2023-12-20");
+function listChange() {}
+
+// request project detail and cache it
+const { data: projectsRenderList } = useAsyncData(
+  "projects-list",
+  async () => {
+    let result: Project[] = [];
+    const cacheIndexArr: { index: number; projectId: number }[] = [];
+    const projectsMapVal = projectsMap.value;
+
+    const idArr = projectsList.value?.projects
+      .slice(startIndex.value - 1, endIndex.value)
+      .map((project) => project.projectId);
+
+    if (idArr) {
+      // create a parallel request
+      const promiseArr = idArr.map((projectId, index) => {
+        if (projectsMapVal.has(projectId)) {
+          return Promise.resolve(projectsMapVal.get(projectId)!);
+        } else {
+          cacheIndexArr.push({ index, projectId });
+          return $fetch(`/api/projects/${projectId}`);
+        }
+      });
+
+      result = await Promise.all(promiseArr);
+
+      // cache projects
+      cacheIndexArr.forEach(({ index, projectId }) => {
+        projectsMapVal.set(projectId, result[index]);
+      });
+    }
+
+    return result;
+  },
+  {
+    watch: [startIndex, endIndex],
+  }
+);
 </script>

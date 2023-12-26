@@ -4,11 +4,15 @@ export default defineNuxtConfig({
     pageTransition: { name: "page", mode: "out-in" },
   },
   routeRules: {
-    "/api/**": { cors: true },
+    "/projects/**": { cors: true },
   },
   devtools: { enabled: true },
   devServer: {
     port: 8080,
   },
-  modules: ["@pinia/nuxt"],
+  modules: ["@pinia/nuxt", "@nuxtjs/tailwindcss"],
+  tailwindcss: {
+    exposeConfig: true,
+    viewer: true,
+  },
 });

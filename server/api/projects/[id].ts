@@ -14,5 +14,7 @@ export default defineEventHandler(async (event) => {
     `${process.env.NASA_API}/projects/${id}`
   );
 
+  console.log(new Date().getMilliseconds(), data.project.projectId);
+
   return data.project;
 });

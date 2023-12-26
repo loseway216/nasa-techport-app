@@ -1,5 +1,4 @@
 <template>
-  <header>header</header>
   <NuxtLoadingIndicator />
   <NuxtLayout>
     <NuxtPage />
@@ -22,5 +21,12 @@ token.value = await $fetch("/api/token");
 .page-leave-to {
   opacity: 0;
   filter: blur(1rem);
+}
+
+#__nuxt {
+  background-color: #eee;
+  background-size: cover;
+  background-repeat: no-repeat;
+  min-height: 100vh;
 }
 </style>
