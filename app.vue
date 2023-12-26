@@ -24,7 +24,12 @@ token.value = await $fetch("/api/token");
 }
 
 #__nuxt {
-  background-color: #eee;
+  /* background-image: linear-gradient(
+      to right bottom,
+      rgba(0, 0, 0, 0.5),
+      rgba(0, 0, 0, 0.1)
+    ),
+    url("/assets/images/blue-marble-4col.jpg"); */
   background-size: cover;
   background-repeat: no-repeat;
   min-height: 100vh;
