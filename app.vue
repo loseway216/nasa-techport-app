@@ -1,7 +1,7 @@
 <template>
   <NuxtLoadingIndicator />
   <NuxtLayout>
-    <NuxtPage />
+    <NuxtPage :keepalive="true" />
   </NuxtLayout>
 </template>
 
@@ -23,15 +23,21 @@ token.value = await $fetch("/api/token");
   filter: blur(1rem);
 }
 
+html {
+  font-family: "Open Sans", "Verdana", "Helvetica", sans-serif;
+}
+
 #__nuxt {
-  /* background-image: linear-gradient(
+  background-image: linear-gradient(
       to right bottom,
       rgba(0, 0, 0, 0.5),
       rgba(0, 0, 0, 0.1)
     ),
-    url("/assets/images/blue-marble-4col.jpg"); */
+    url("/assets/images/blue-marble-4col.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 </style>

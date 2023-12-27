@@ -10,7 +10,7 @@ export default defineNuxtConfig({
   devServer: {
     port: 8080,
   },
-  modules: ["@pinia/nuxt", "@nuxtjs/tailwindcss"],
+  modules: ["@pinia/nuxt", "@nuxtjs/tailwindcss", "nuxt-icon", "@nuxt/image"],
   tailwindcss: {
     exposeConfig: true,
     viewer: true,

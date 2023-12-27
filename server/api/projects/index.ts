@@ -7,5 +7,12 @@ export default defineEventHandler(async (event) => {
     `${process.env.NASA_API}/projects?updatedSince=${query.updatedSince}`
   );
 
+  console.log(
+    new Date().getMinutes(),
+    new Date().getMilliseconds(),
+    data.totalCount,
+    query.updatedSince
+  );
+
   return data;
 });

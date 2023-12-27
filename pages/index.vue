@@ -1,15 +1,16 @@
 <template>
-  <div>
-    <ul>
-      <div class="flex">
-        <div>
-          {{ `Listing ${startIndex} - ${endIndex} of ${pagination.total}` }}
-        </div>
-        <custom-pagination :pagination="pagination" @change="listChange" />
+  <div class="bg-stone-200 flex-1 rounded">
+    <div class="flex items-center p-2 border-b border-b-slate-500">
+      <div>
+        {{ `Listing ${startIndex} - ${endIndex} of ${pagination.total}` }}
       </div>
-      <div v-if="projectsListPending || projectsRenderListPending">
-        Loading...
+      <custom-pagination :pagination="pagination" @change="listChange" />
+      <div>
+        Show last <input type="number" v-model.lazy="interval" /> days' projects
       </div>
+    </div>
+    <ul class="p-4">
+      <spinner v-if="projectsListPending || projectsRenderListPending" />
       <li v-else v-for="project in projectsRenderList" :key="project.projectId">
         <project-item :project="project" />
       </li>
@@ -30,8 +31,10 @@ const pagination = ref({
   pageNumber: 1,
   pageSize: 10,
 });
+const interval = ref(7);
+const dateStr = computed(() => convertDateStr(interval.value));
 
-// computed data
+// computed pagination data
 const paginationVal = pagination.value;
 const startIndex = computed(
   () => (paginationVal.pageNumber - 1) * paginationVal.pageSize + 1
@@ -51,8 +54,8 @@ const {
   error,
   pending: projectsListPending,
 } = await useFetch("/api/projects", {
-  params: {
-    updatedSince: "2023-12-20",
+  query: {
+    updatedSince: dateStr,
   },
 });
 if (error.value) {
@@ -63,8 +66,15 @@ if (error.value) {
 }
 if (projectsList.value) {
   pagination.value.pageNumber = 1;
-  pagination.value.total = projectsList.value.totalCount;
+  pagination.value.total = projectsList.value.totalCount || 0;
 }
+// update pagination data when projectsList change
+watch(projectsList, (newVal) => {
+  if (newVal) {
+    pagination.value.pageNumber = 1;
+    pagination.value.total = newVal.totalCount || 0;
+  }
+});
 
 // request project detail and cache it
 const { data: projectsRenderList, pending: projectsRenderListPending } =

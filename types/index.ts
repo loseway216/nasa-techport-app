@@ -23,6 +23,7 @@ export interface Project {
   programExecutives: Contact[];
   programManagers: Contact[];
   projectManagers: Contact[];
+  principalInvestigators: Contact[];
   website: string;
   libraryItems: LibraryItem[];
   transitions: [];
