@@ -4,7 +4,8 @@
       {{ projectDetail.title }}
     </h1>
     <span
-      class="bg-slate-600 text-white rounded shadow p-1 text-sm mb-2 self-start"
+      class="bg-slate-500 text-white rounded shadow p-1 text-sm mb-2 self-start"
+      :class="statusClass"
       >{{ projectDetail.statusDescription }} Technology Project</span
     >
     <div
@@ -134,6 +135,10 @@ else {
     projectDetail.value = data.value;
   }
 }
+
+const statusClass = computed(() =>
+  convertStatusClass(projectDetail.value!.statusDescription)
+);
 </script>
 
 <style scoped>

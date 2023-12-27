@@ -23,9 +23,9 @@ token.value = await $fetch("/api/token");
   filter: blur(1rem);
 }
 
-html {
+/* html {
   font-family: "Open Sans", "Verdana", "Helvetica", sans-serif;
-}
+} */
 
 #__nuxt {
   background-image: linear-gradient(
