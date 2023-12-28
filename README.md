@@ -2,6 +2,14 @@
 
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
+## Features
+
+- add custom charts directive
+- parallel requests and caching
+- encapsulate client-side pagination and other reusable components
+- responsive design for mobile and desktop
+- unit tests and end-to-end tests
+
 ## Setup
 
 Make sure to install the dependencies:

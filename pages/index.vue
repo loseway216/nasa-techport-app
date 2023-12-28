@@ -1,43 +1,57 @@
 <template>
-  <div class="bg-stone-200 flex-1 rounded">
-    <div class="flex items-center p-2 border-b border-b-stone-400">
-      <div>
-        Showing
-        {{ " " }}
-        <span class="font-medium">{{ startIndex }}</span>
-        {{ " " }}
-        to
-        {{ " " }}
-        <span class="font-medium">{{ endIndex }}</span>
-        {{ " " }}
-        of
-        {{ " " }}
-        <span class="font-medium">{{ pagination.total }}</span>
-        {{ " " }}
-        results
+  <div>
+    <dashboard
+      :projects="projectsRenderList"
+      :loading="projectsRenderListPending"
+    />
+
+    <div class="bg-stone-200 flex-1 rounded">
+      <!-- TODO: responsive ui -->
+      <div class="flex items-center p-2">
+        <div>
+          Showing
+          {{ " " }}
+          <span class="font-medium">{{ startIndex }}</span>
+          {{ " " }}
+          to
+          {{ " " }}
+          <span class="font-medium">{{ endIndex }}</span>
+          {{ " " }}
+          of
+          {{ " " }}
+          <span class="font-medium">{{ pagination.total }}</span>
+          {{ " " }}
+          results
+        </div>
+        <custom-pagination :pagination="pagination" @change="listChange" />
+        <div>
+          Show last
+          <input
+            class="bg-white w-16 pl-2 py-1 border border-slate-300 rounded shadow-sm focus:outline-none focus:border-slate-500 focus:ring-slate-500 focus:ring-1"
+            type="number"
+            v-model.lazy="interval"
+          />
+          days' projects
+        </div>
       </div>
-      <custom-pagination :pagination="pagination" @change="listChange" />
-      <div>
-        Show last
-        <input
-          class="bg-white w-16 pl-2 py-1 border border-slate-300 rounded shadow-sm focus:outline-none focus:border-slate-500 focus:ring-slate-500 focus:ring-1"
-          type="number"
-          v-model.lazy="interval"
-        />
-        days' projects
-      </div>
+      <ul class="p-2 space-y-4">
+        <spinner v-if="projectsListPending || projectsRenderListPending" />
+        <li
+          v-else
+          v-for="project in projectsRenderList"
+          :key="project.projectId"
+        >
+          <project-item :project="project" />
+        </li>
+      </ul>
     </div>
-    <ul class="p-4 space-y-4">
-      <spinner v-if="projectsListPending || projectsRenderListPending" />
-      <li v-else v-for="project in projectsRenderList" :key="project.projectId">
-        <project-item :project="project" />
-      </li>
-    </ul>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { Project } from "~/types";
+// TODO: refactor code to hooks
+// write test
 
 // init projects map to cache projects data
 const projectsMap = useState<Map<number, Project>>(
@@ -62,8 +76,6 @@ const endIndex = computed(() =>
     ? paginationVal.total
     : paginationVal.pageNumber * paginationVal.pageSize
 );
-
-// computed charts data
 
 // get projects list in the last 7 days
 // but /api/projects return almost nothing except id

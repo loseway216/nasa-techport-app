@@ -1,0 +1,62 @@
+import * as echarts from "echarts";
+import type { MapData, Project } from "~/types";
+
+type EChartsOption = echarts.EChartsOption;
+
+export default function useMapChart(projects: (Project | undefined)[]) {
+  const option = computed<EChartsOption>(() => {
+    // computed projects status data
+    const data: MapData[] =
+      projects?.reduce((acc, cur) => {
+        if (cur && cur.statusDescription) {
+          const index = acc.findIndex(
+            (item) => item.name === cur.statusDescription
+          );
+          if (index === -1) {
+            acc.push({
+              name: cur.statusDescription,
+              value: 1,
+            });
+          } else {
+            acc[index].value++;
+          }
+        }
+        return acc;
+      }, [] as MapData[]) ?? [];
+
+    // console.log(data);
+
+    return {
+      title: {
+        text: "Project Status",
+        textStyle: {
+          fontSize: 14,
+        },
+      },
+      tooltip: {
+        trigger: "item",
+      },
+      // legend: {
+      //   orient: "vertical",
+      //   left: "left",
+      // },
+      series: [
+        {
+          name: "Status",
+          type: "pie",
+          radius: "50%",
+          data: data,
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: "rgba(0, 0, 0, 0.5)",
+            },
+          },
+        },
+      ],
+    };
+  });
+
+  return { option };
+}

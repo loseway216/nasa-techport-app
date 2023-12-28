@@ -1,14 +1,14 @@
 <template>
   <div class="flex items-center m-auto justify-between space-x-2">
     <button
-      class="text-slate-800 shadow rounded border border-slate-500 h-8 w-20 bg-white cursor-pointer disabled:bg-slate-300 disabled:cursor-not-allowed"
+      class="text-slate-800 shadow rounded border border-slate-500 h-8 w-20 bg-white cursor-pointer disabled:bg-gray-300 disabled:cursor-not-allowed"
       @click="firstPage"
       :disabled="pageNumber === 1"
     >
       First
     </button>
     <button
-      class="text-slate-800 shadow rounded border border-slate-500 h-8 w-20 bg-white cursor-pointer disabled:bg-slate-300 disabled:cursor-not-allowed"
+      class="text-slate-800 shadow rounded border border-slate-500 h-8 w-20 bg-white cursor-pointer disabled:bg-gray-300 disabled:cursor-not-allowed"
       @click="prevPage"
       :disabled="pageNumber === 1"
     >
@@ -29,14 +29,14 @@
       </span>
     </div>
     <button
-      class="text-slate-800 shadow rounded border border-slate-500 h-8 w-20 bg-white cursor-pointer disabled:bg-slate-300 disabled:cursor-not-allowed"
+      class="text-slate-800 shadow rounded border border-slate-500 h-8 w-20 bg-white cursor-pointer disabled:bg-gray-300 disabled:cursor-not-allowed"
       @click="nextPage"
       :disabled="pageNumber === totalPage"
     >
       Next
     </button>
     <button
-      class="text-slate-800 shadow rounded border border-slate-500 h-8 w-20 bg-white cursor-pointer disabled:bg-slate-300 disabled:cursor-not-allowed"
+      class="text-slate-800 shadow rounded border border-slate-500 h-8 w-20 bg-white cursor-pointer disabled:bg-gray-300 disabled:cursor-not-allowed"
       @click="lastPage"
       :disabled="pageNumber === totalPage"
     >
@@ -78,7 +78,7 @@ function pageChange(event: any) {
 
 function sizeChange(event: any) {
   const val = event.target.value;
-  emit("change", pageNumber.value, val);
+  emit("change", 1, val);
 }
 
 function prevPage() {
