@@ -3,11 +3,11 @@ import type { MapData, Project } from "~/types";
 
 type EChartsOption = echarts.EChartsOption;
 
-export default function useMapChart(projects: (Project | undefined)[]) {
+export default function useMapChart(projects: Ref<(Project | undefined)[]>) {
   const option = computed<EChartsOption>(() => {
     // computed projects status data
     const data: MapData[] =
-      projects?.reduce((acc, cur) => {
+      projects.value?.reduce((acc, cur) => {
         if (cur && cur.statusDescription) {
           const index = acc.findIndex(
             (item) => item.name === cur.statusDescription
@@ -36,6 +36,7 @@ export default function useMapChart(projects: (Project | undefined)[]) {
       tooltip: {
         trigger: "item",
       },
+      color: ["#10b981", "#f43f5e", "#0ea5e9"],
       // legend: {
       //   orient: "vertical",
       //   left: "left",

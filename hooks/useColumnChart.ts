@@ -15,11 +15,11 @@ const xAxisData = [
   "TRL 9",
 ];
 
-export default function useMapChart(projects: (Project | undefined)[]) {
+export default function useMapChart(projects: Ref<(Project | undefined)[]>) {
   const option = computed<EChartsOption>(() => {
     // computed trl data
     const data: number[] =
-      projects?.reduce(
+      projects.value?.reduce(
         (acc, cur) => {
           if (cur && cur.currentTrl) {
             acc[cur.currentTrl - 1]++;

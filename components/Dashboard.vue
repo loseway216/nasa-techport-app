@@ -1,9 +1,6 @@
 <template>
   <div class="mb-4" style="min-height: 30rem">
     <client-only class="text-white flex items-center justify-center">
-      <div class="text-white">
-        {{ JSON.stringify(trlOption) }}
-      </div>
       <div class="grid grid-rows-2 grid-cols-4 gap-4" style="min-height: 30rem">
         <v-chart
           class="bg-stone-300 shadow rounded h-full w-full row-span-full col-span-2"
@@ -12,7 +9,7 @@
         />
         <v-chart
           class="bg-stone-300 shadow rounded h-full w-full"
-          :options="statusOption"
+          :option="statusOption"
           autoresize
         />
         <v-chart
@@ -44,10 +41,12 @@ import usePieChart from "~/hooks/usePieChart";
 import type { Project } from "~/types";
 
 const props = defineProps<{ projects: Project[]; loading: boolean }>();
+const projects = computed(() => props.projects);
 
-const { option: mapOption } = useMapChart(props.projects);
-const { option: statusOption } = usePieChart(props.projects);
-const { option: trlOption } = useColumnChart(props.projects);
-const { option: orgOption } = useBarChart(props.projects);
-const { option: areaOption } = useAreaChart(props.projects);
+// charts hooks
+const { option: mapOption } = useMapChart(projects);
+const { option: statusOption } = usePieChart(projects);
+const { option: trlOption } = useColumnChart(projects);
+const { option: orgOption } = useBarChart(projects);
+const { option: areaOption } = useAreaChart(projects);
 </script>

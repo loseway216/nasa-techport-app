@@ -3,7 +3,7 @@ import type { Project } from "~/types";
 
 type EChartsOption = echarts.EChartsOption;
 
-export default function useMapChart(projects: (Project | undefined)[]) {
+export default function useMapChart(projects: Ref<(Project | undefined)[]>) {
   const option = computed<EChartsOption>(() => {
     let map = {
       Academia: 0,
@@ -13,7 +13,7 @@ export default function useMapChart(projects: (Project | undefined)[]) {
       "Other US Government": 0,
     };
     // computed organization data
-    projects?.forEach((project) => {
+    projects.value?.forEach((project) => {
       if (project && project.leadOrganization) {
         map[project.leadOrganization.organizationType] += 1;
       }

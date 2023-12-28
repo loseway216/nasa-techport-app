@@ -3,7 +3,7 @@ import type { Project } from "~/types";
 
 type EChartsOption = echarts.EChartsOption;
 
-export default function useMapChart(projects: (Project | undefined)[]) {
+export default function useMapChart(projects: Ref<(Project | undefined)[]>) {
   const option = computed<EChartsOption>(() => {
     let map = {
       TX01: 0,
@@ -18,7 +18,7 @@ export default function useMapChart(projects: (Project | undefined)[]) {
       TX10: 0,
     };
     // computed trl data
-    projects?.forEach((project) => {
+    projects.value?.forEach((project) => {
       if (project && project.primaryTaxonomyNodes?.length > 0) {
         const code = project.primaryTaxonomyNodes[0]?.code?.split(
           "."
@@ -36,6 +36,9 @@ export default function useMapChart(projects: (Project | undefined)[]) {
         textStyle: {
           fontSize: 14,
         },
+      },
+      tooltip: {
+        trigger: "item",
       },
       xAxis: {
         type: "category",

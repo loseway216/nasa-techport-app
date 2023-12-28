@@ -8,11 +8,11 @@ interface MapData {
   value: number;
 }
 
-export default function useMapChart(projects: (Project | undefined)[]) {
+export default function useMapChart(projects: Ref<(Project | undefined)[]>) {
   const option = computed<EChartsOption>(() => {
     // computed states map data
     const data: MapData[] =
-      projects?.reduce((acc, cur) => {
+      projects.value?.reduce((acc, cur) => {
         if (cur && cur.statesWithWork) {
           cur.statesWithWork.forEach((organization) => {
             const index = acc.findIndex(
