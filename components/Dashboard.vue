@@ -1,46 +1,23 @@
 <template>
-  <div class="mb-4" style="min-height: 30rem">
+  <div class="mb-4 min-h-128">
     <client-only class="text-white flex items-center justify-center">
-      <div class="grid grid-rows-2 grid-cols-4 gap-4" style="min-height: 30rem">
-        <v-chart
-          class="bg-stone-300 shadow rounded h-full w-full row-span-full col-span-2"
-          :option="mapOption"
-          autoresize
-        />
-        <v-chart
-          class="bg-stone-300 shadow rounded h-full w-full"
-          :option="statusOption"
-          autoresize
-        />
-        <v-chart
-          class="bg-stone-300 shadow rounded h-full w-full"
-          :option="trlOption"
-          autoresize
-        />
-        <v-chart
-          class="bg-stone-300 shadow rounded h-full w-full"
-          :option="orgOption"
-          autoresize
-        />
-        <v-chart
-          class="bg-stone-300 shadow rounded h-full w-full"
-          :option="areaOption"
-          autoresize
-        />
+      <div class="min-h-128 grid sm:grid-rows-2 sm:grid-cols-4 grid-cols-1 sm:gap-4 gap-2">
+        <v-chart class="bg-stone-300 shadow rounded h-full w-full sm:row-span-full sm:col-span-2 min-h-64 sm:min-h-0"
+          :option="mapOption" autoresize />
+        <v-chart class="bg-stone-300 shadow rounded h-full w-full min-h-64 sm:min-h-0" :option="statusOption"
+          autoresize />
+        <v-chart class="bg-stone-300 shadow rounded h-full w-full min-h-64 sm:min-h-0" :option="trlOption" autoresize />
+        <v-chart class="bg-stone-300 shadow rounded h-full w-full min-h-64 sm:min-h-0" :option="orgOption" autoresize />
+        <v-chart class="bg-stone-300 shadow rounded h-full w-full min-h-64 sm:min-h-0" :option="areaOption" autoresize />
       </div>
     </client-only>
   </div>
 </template>
 <script setup lang="ts">
 import VChart from "vue-echarts";
-import useAreaChart from "~/hooks/useAreaChart";
-import useBarChart from "~/hooks/useBarChart";
-import useColumnChart from "~/hooks/useColumnChart";
-import useMapChart from "~/hooks/useMapChart";
-import usePieChart from "~/hooks/usePieChart";
 import type { Project } from "~/types";
 
-const props = defineProps<{ projects: Project[]; loading: boolean }>();
+const props = defineProps<{ projects: Project[] | null; loading: boolean }>();
 const projects = computed(() => props.projects);
 
 // charts hooks

@@ -3,7 +3,7 @@ import type { MapData, Project } from "~/types";
 
 type EChartsOption = echarts.EChartsOption;
 
-export default function useMapChart(projects: Ref<(Project | undefined)[]>) {
+export const usePieChart = (projects: Ref<Project[] | null>) => {
   const option = computed<EChartsOption>(() => {
     // computed projects status data
     const data: MapData[] =
@@ -60,4 +60,4 @@ export default function useMapChart(projects: Ref<(Project | undefined)[]>) {
   });
 
   return { option };
-}
+};

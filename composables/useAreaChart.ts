@@ -3,7 +3,7 @@ import type { Project } from "~/types";
 
 type EChartsOption = echarts.EChartsOption;
 
-export default function useMapChart(projects: Ref<(Project | undefined)[]>) {
+export const useAreaChart = (projects: Ref<Project[] | null>) => {
   const option = computed<EChartsOption>(() => {
     let map = {
       TX01: 0,
@@ -71,4 +71,4 @@ export default function useMapChart(projects: Ref<(Project | undefined)[]>) {
   });
 
   return { option };
-}
+};

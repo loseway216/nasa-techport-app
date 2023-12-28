@@ -1,13 +1,10 @@
 <template>
   <div>
-    <dashboard
-      :projects="projectsRenderList"
-      :loading="projectsRenderListPending"
-    />
+    <dashboard :projects="projectsRenderList" :loading="projectsRenderListPending" />
 
     <div class="bg-stone-200 flex-1 rounded">
       <!-- TODO: responsive ui -->
-      <div class="flex items-center p-2">
+      <div class="flex items-center p-2 flex-wrap space-y-2 sm:space-x-4">
         <div>
           Showing
           {{ " " }}
@@ -24,23 +21,17 @@
           results
         </div>
         <custom-pagination :pagination="pagination" @change="listChange" />
-        <div>
+        <div class="ml-auto">
           Show last
           <input
             class="bg-white w-16 pl-2 py-1 border border-slate-300 rounded shadow-sm focus:outline-none focus:border-slate-500 focus:ring-slate-500 focus:ring-1"
-            type="number"
-            v-model.lazy="interval"
-          />
+            type="number" v-model.lazy="interval" />
           days' projects
         </div>
       </div>
       <ul class="p-2 space-y-4">
         <spinner v-if="projectsListPending || projectsRenderListPending" />
-        <li
-          v-else
-          v-for="project in projectsRenderList"
-          :key="project.projectId"
-        >
+        <li v-else v-for="project in projectsRenderList" :key="project.projectId">
           <project-item :project="project" />
         </li>
       </ul>

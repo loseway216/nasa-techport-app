@@ -9,7 +9,7 @@
       <span class="rounded shadow p-1 text-sm mb-2 inline-block bg-stone-200">{{ projectDetail.viewCount }} views</span>
     </div>
 
-    <div class="bg-stone-200 flex-1 rounded grid grid-rows-3 grid-cols-4 gap-4 p-4"
+    <div class="bg-stone-200 flex-1 rounded grid grid-rows-3 grid-cols-1 sm:grid-cols-4 gap-4 p-4"
       style="grid-template-rows: repeat(3, min-content)">
       <div class="col-span-3">
         <h2 class="text-2xl font-semibold mb-2">Project Description</h2>
@@ -29,7 +29,7 @@
           <v-chart class="h-full w-full" style="min-height: 26rem" :option="option" autoresize />
         </client-only>
       </div>
-      <div class="row-span-full col-start-4 grid grid-cols-subgrid gap-4">
+      <div class="row-span-full sm:col-start-4 col-start-1 grid grid-cols-subgrid gap-4">
         <NuxtImg class="rounded-lg w-full" alt="project image"
           :src="`https://techport.nasa.gov/view/${projectDetail.projectId}/image`" />
         <div class="overflow-hidden">
@@ -112,7 +112,6 @@
 
 <script setup lang="ts">
 import VChart from "vue-echarts";
-import useMapChart from "~/hooks/useMapChart";
 import type { Project } from "~/types";
 
 const route = useRoute();
@@ -158,3 +157,4 @@ const statusClass = computed(() =>
 const projects = computed(() => [projectDetail.value!]);
 const { option } = useMapChart(projects);
 </script>
+~/composables/useMapChart

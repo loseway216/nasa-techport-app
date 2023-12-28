@@ -15,7 +15,7 @@ const xAxisData = [
   "TRL 9",
 ];
 
-export default function useMapChart(projects: Ref<(Project | undefined)[]>) {
+export const useColumnChart = (projects: Ref<Project[] | null>) => {
   const option = computed<EChartsOption>(() => {
     // computed trl data
     const data: number[] =
@@ -58,4 +58,4 @@ export default function useMapChart(projects: Ref<(Project | undefined)[]>) {
   });
 
   return { option };
-}
+};

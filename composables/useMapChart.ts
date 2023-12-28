@@ -8,7 +8,7 @@ interface MapData {
   value: number;
 }
 
-export default function useMapChart(projects: Ref<(Project | undefined)[]>) {
+export const useMapChart = (projects: Ref<Project[] | null>) => {
   const option = computed<EChartsOption>(() => {
     // computed states map data
     const data: MapData[] =
@@ -68,4 +68,4 @@ export default function useMapChart(projects: Ref<(Project | undefined)[]>) {
   });
 
   return { option };
-}
+};
