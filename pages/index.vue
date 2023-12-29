@@ -3,7 +3,6 @@
     <dashboard :projects="projectsRenderList" :loading="projectsRenderListPending" />
 
     <div class="bg-stone-200 flex-1 rounded">
-      <!-- TODO: responsive ui -->
       <div class="flex items-center p-2 flex-wrap space-y-2 sm:space-x-4">
         <div>
           Showing
@@ -21,7 +20,7 @@
           results
         </div>
         <custom-pagination :pagination="pagination" @change="listChange" />
-        <div class="ml-auto">
+        <div class="ml-0 sm:ml-auto">
           Show last
           <input
             class="bg-white w-16 pl-2 py-1 border border-slate-300 rounded shadow-sm focus:outline-none focus:border-slate-500 focus:ring-slate-500 focus:ring-1"
@@ -34,6 +33,9 @@
         <li v-else v-for="project in projectsRenderList" :key="project.projectId">
           <project-item :project="project" />
         </li>
+        <div class="w-full text-center text-xl p-12" v-if="projectsRenderList?.length == 0">
+          No projects founded...
+        </div>
       </ul>
     </div>
   </div>

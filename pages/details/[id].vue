@@ -9,7 +9,7 @@
       <span class="rounded shadow p-1 text-sm mb-2 inline-block bg-stone-200">{{ projectDetail.viewCount }} views</span>
     </div>
 
-    <div class="bg-stone-200 flex-1 rounded grid grid-rows-3 grid-cols-1 sm:grid-cols-4 gap-4 p-4"
+    <div class="bg-stone-200 flex-1 rounded grid grid-rows-3 grid-cols-1 sm:grid-cols-4 gap-0 sm:gap-4 p-4"
       style="grid-template-rows: repeat(3, min-content)">
       <div class="col-span-3">
         <h2 class="text-2xl font-semibold mb-2">Project Description</h2>
@@ -157,4 +157,3 @@ const statusClass = computed(() =>
 const projects = computed(() => [projectDetail.value!]);
 const { option } = useMapChart(projects);
 </script>
-~/composables/useMapChart

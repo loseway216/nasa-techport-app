@@ -4,10 +4,10 @@ Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introdu
 
 ## Features
 
-- add custom charts directive
+- add data-driven charts analytics
 - parallel requests and caching
 - encapsulate client-side pagination and other reusable components
-- responsive design for mobile and desktop
+- responsive design for desktop and mobile
 - unit tests and end-to-end tests
 
 ## Setup

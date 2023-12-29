@@ -1,7 +1,8 @@
 <template>
-  <div class="flex items-center justify-between space-x-2 basis-full sm:basis-auto order-1 sm:order-none">
+  <div
+    class="flex items-center space-x-2 basis-full sm:basis-auto order-1 sm:order-none flex-wrap sm:flex-nowrap justify-start sm:justify-between">
     <button
-      class="text-slate-800 shadow rounded border border-slate-500 h-8 w-20 bg-white cursor-pointer disabled:bg-gray-300 disabled:cursor-not-allowed"
+      class="text-slate-800 shadow rounded border border-slate-500 h-8 w-20 bg-white cursor-pointer disabled:bg-gray-300 disabled:cursor-not-allowed ml-2 sm:ml-0"
       @click="firstPage" :disabled="pageNumber === 1">
       First
     </button>
@@ -19,7 +20,7 @@
       {{ totalPage }}
     </span>
     <button
-      class="text-slate-800 shadow rounded border border-slate-500 h-8 w-20 bg-white cursor-pointer disabled:bg-gray-300 disabled:cursor-not-allowed"
+      class="text-slate-800 shadow rounded border border-slate-500 h-8 w-20 bg-white cursor-pointer disabled:bg-gray-300 disabled:cursor-not-allowed ml-0 sm:ml-2"
       @click="nextPage" :disabled="pageNumber === totalPage">
       Next
     </button>
