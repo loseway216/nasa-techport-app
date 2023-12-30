@@ -56,7 +56,7 @@ export interface Project {
   viewCount: number;
 }
 
-interface Organization {
+export interface Organization {
   acronym: string;
   canUserEdit: boolean;
   city: string;

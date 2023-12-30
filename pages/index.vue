@@ -4,7 +4,7 @@
 
     <div class="bg-stone-200 flex-1 rounded">
       <div class="flex items-center p-2 flex-wrap space-y-2 sm:space-x-4">
-        <div>
+        <div class="mr-auto">
           Showing
           {{ " " }}
           <span class="font-medium">{{ startIndex }}</span>
@@ -34,7 +34,7 @@
           <project-item :project="project" />
         </li>
         <div class="w-full text-center text-xl p-12" v-if="projectsRenderList?.length == 0">
-          No projects founded...
+          No results found. Please change the interval.
         </div>
       </ul>
     </div>
@@ -43,26 +43,19 @@
 
 <script setup lang="ts">
 import type { Project } from "~/types";
-// TODO: refactor code to hooks
-// write test
 
-// init projects map to cache projects data
-const projectsMap = useState<Map<number, Project>>(
-  "projectsMap",
-  () => new Map()
-);
+// pagination data and handler
 const pagination = ref({
   total: 0,
   pageNumber: 1,
   pageSize: 10,
 });
-const interval = ref(7);
-const dateStr = computed(() => convertDateStr(interval.value));
 
-// computed pagination data
 const paginationVal = pagination.value;
-const startIndex = computed(
-  () => (paginationVal.pageNumber - 1) * paginationVal.pageSize + 1
+const startIndex = computed(() =>
+  paginationVal.total === 0
+    ? 0
+    : (paginationVal.pageNumber - 1) * paginationVal.pageSize + 1
 );
 const endIndex = computed(() =>
   paginationVal.pageNumber * paginationVal.pageSize > paginationVal.total
@@ -70,8 +63,19 @@ const endIndex = computed(() =>
     : paginationVal.pageNumber * paginationVal.pageSize
 );
 
+function listChange(pageNumber: number, pageSize: number) {
+  pagination.value.pageNumber = pageNumber;
+  pagination.value.pageSize = pageSize;
+}
+
+// interval data
+const interval = ref(7);
+const dateStr = computed(() => convertDateStr(interval.value));
+
 // get projects list in the last 7 days
 // but /api/projects return almost nothing except id
+// so we need to request project detail by id manually
+const projectIdList = ref<number[]>([]);
 const {
   data: projectsList,
   error,
@@ -88,18 +92,25 @@ if (error.value) {
   });
 }
 if (projectsList.value) {
+  projectIdList.value = projectsList.value.projectIdList;
   pagination.value.pageNumber = 1;
-  pagination.value.total = projectsList.value.totalCount || 0;
+  pagination.value.total = projectsList.value.totalCount;
 }
 // update pagination data when projectsList change
 watch(projectsList, (newVal) => {
   if (newVal) {
+    projectIdList.value = newVal.projectIdList;
     pagination.value.pageNumber = 1;
-    pagination.value.total = newVal.totalCount || 0;
+    pagination.value.total = newVal.totalCount;
   }
 });
 
-// request project detail and cache it
+// init projects map to cache projects data
+const projectsMap = useState<Map<number, Project>>(
+  "projectsMap",
+  () => new Map()
+);
+// wrap multiple requests in one promise
 const { data: projectsRenderList, pending: projectsRenderListPending } =
   useAsyncData(
     "projects-list",
@@ -108,9 +119,7 @@ const { data: projectsRenderList, pending: projectsRenderListPending } =
       const cacheIndexArr: { index: number; projectId: number }[] = [];
       const projectsMapVal = projectsMap.value;
 
-      const idArr = projectsList.value?.projects
-        .slice(startIndex.value - 1, endIndex.value)
-        .map((project) => project.projectId);
+      const idArr = projectIdList.value?.slice(startIndex.value - 1, endIndex.value);
 
       if (idArr) {
         // create a parallel request
@@ -137,9 +146,4 @@ const { data: projectsRenderList, pending: projectsRenderListPending } =
       watch: [startIndex, endIndex],
     }
   );
-
-function listChange(pageNumber: number, pageSize: number) {
-  pagination.value.pageNumber = pageNumber;
-  pagination.value.pageSize = pageSize;
-}
 </script>

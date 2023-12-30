@@ -7,9 +7,6 @@ export default defineNuxtConfig({
     "/projects/**": { cors: true },
   },
   devtools: { enabled: true },
-  devServer: {
-    port: 8080,
-  },
   modules: ["@nuxtjs/tailwindcss", "@nuxt/image"],
   tailwindcss: {
     exposeConfig: true,

@@ -14,11 +14,11 @@ export default defineEventHandler(async (event) => {
     `${process.env.NASA_API}/projects/${id}`
   );
 
-  // console.log(
-  //   new Date().getMinutes(),
-  //   new Date().getMilliseconds(),
-  //   data.project.projectId
-  // );
+  // console.log(data.project.projectId);
+  console.log(
+    data.project.projectId,
+    data.project?.supportingOrganizations?.length
+  );
 
   return data.project;
 });

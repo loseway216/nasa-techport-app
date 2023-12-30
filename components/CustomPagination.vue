@@ -3,12 +3,12 @@
     class="flex items-center space-x-2 basis-full sm:basis-auto order-1 sm:order-none flex-wrap sm:flex-nowrap justify-start sm:justify-between">
     <button
       class="text-slate-800 shadow rounded border border-slate-500 h-8 w-20 bg-white cursor-pointer disabled:bg-gray-300 disabled:cursor-not-allowed ml-2 sm:ml-0"
-      @click="firstPage" :disabled="pageNumber === 1">
+      @click="firstPage" :disabled="pageNumber === 1 || totalPage === 0">
       First
     </button>
     <button
       class="text-slate-800 shadow rounded border border-slate-500 h-8 w-20 bg-white cursor-pointer disabled:bg-gray-300 disabled:cursor-not-allowed"
-      @click="prevPage" :disabled="pageNumber === 1">
+      @click="prevPage" :disabled="pageNumber === 1 || totalPage === 0">
       Previous
     </button>
     <span>Page</span>
@@ -21,12 +21,12 @@
     </span>
     <button
       class="text-slate-800 shadow rounded border border-slate-500 h-8 w-20 bg-white cursor-pointer disabled:bg-gray-300 disabled:cursor-not-allowed ml-0 sm:ml-2"
-      @click="nextPage" :disabled="pageNumber === totalPage">
+      @click="nextPage" :disabled="pageNumber === totalPage || totalPage === 0">
       Next
     </button>
     <button
       class="text-slate-800 shadow rounded border border-slate-500 h-8 w-20 bg-white cursor-pointer disabled:bg-gray-300 disabled:cursor-not-allowed"
-      @click="lastPage" :disabled="pageNumber === totalPage">
+      @click="lastPage" :disabled="pageNumber === totalPage || totalPage === 0">
       Last
     </button>
     <select

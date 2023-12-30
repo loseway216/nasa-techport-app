@@ -3,10 +3,11 @@
     <h1 class="text-3xl text-white font-medium mb-1">
       {{ projectDetail.title }}
     </h1>
-    <div class="space-x-4">
-      <span class="text-white rounded shadow p-1 text-sm mb-2 inline-block" :class="statusClass">{{
+    <div class="flex items-center mb-1">
+      <span class="text-white rounded shadow p-1 text-sm mb-2 inline-block mr-2" :class="statusClass">{{
         projectDetail.statusDescription }} Technology Project</span>
       <span class="rounded shadow p-1 text-sm mb-2 inline-block bg-stone-200">{{ projectDetail.viewCount }} views</span>
+      <button class="ml-auto h-8 px-6 font-semibold rounded-md bg-stone-200" @click="() => router.go(-1)">Back</button>
     </div>
 
     <div class="bg-stone-200 flex-1 rounded grid grid-rows-3 grid-cols-1 sm:grid-cols-4 gap-0 sm:gap-4 p-4"
@@ -39,9 +40,6 @@
           <description-item label="Responsible Mission Directorate"
             :value="projectDetail.responsibleMd?.organizationName" />
           <description-item label="Lead Organization" :value="projectDetail.leadOrganization?.organizationName" />
-          <description-item v-if="projectDetail.supportingOrganizations?.length > 0" label="Supporting Organization"
-            :value="projectDetail.supportingOrganizations?.[0]?.organizationName
-              " />
           <description-item v-if="projectDetail.program.title" label="Responsible Program"
             :value="projectDetail.program.title" />
         </div>
@@ -107,6 +105,13 @@
         </div>
       </div>
     </div>
+
+    <div class="bg-stone-200 rounded p-4 mt-2">
+      <organizations :organizations="[
+        projectDetail.leadOrganization,
+        ...(projectDetail.supportingOrganizations || []),
+      ]" />
+    </div>
   </div>
 </template>
 
@@ -114,6 +119,7 @@
 import VChart from "vue-echarts";
 import type { Project } from "~/types";
 
+const router = useRouter();
 const route = useRoute();
 // prevent user input an invalid projectId manually
 definePageMeta({
@@ -135,7 +141,7 @@ if (projectsMap.value?.has(projectId.value)) {
 // request the project detail by id if it's not cached
 else {
   const { data, pending, error } = await useFetch<Project>(
-    `/api/projects/${route.params.id}`
+    `/api/projects/${projectId.value}`
   );
   if (error.value) {
     throw createError({
@@ -155,5 +161,5 @@ const statusClass = computed(() =>
 
 // map chart
 const projects = computed(() => [projectDetail.value!]);
-const { option } = useMapChart(projects);
+const { option } = useMapChart(projects, false);
 </script>

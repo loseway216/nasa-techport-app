@@ -8,7 +8,10 @@ interface MapData {
   value: number;
 }
 
-export const useMapChart = (projects: Ref<Project[] | null>) => {
+export const useMapChart = (
+  projects: Ref<Project[] | null>,
+  showTitle: boolean = true
+) => {
   const option = computed<EChartsOption>(() => {
     // computed states map data
     const data: MapData[] =
@@ -34,7 +37,7 @@ export const useMapChart = (projects: Ref<Project[] | null>) => {
     // console.log(data);
 
     return {
-      title: { text: "States with Work" },
+      title: { text: showTitle ? "States with Work" : undefined },
       tooltip: {
         trigger: "item",
         showDelay: 0,
