@@ -15,10 +15,6 @@ export default defineEventHandler(async (event) => {
   );
 
   // console.log(data.project.projectId);
-  console.log(
-    data.project.projectId,
-    data.project?.supportingOrganizations?.length
-  );
 
   return data.project;
 });

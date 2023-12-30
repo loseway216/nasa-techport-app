@@ -1,9 +1,11 @@
 <template>
   <div>
+    <spinner v-if="projectsListPending || projectsRenderListPending" />
+
     <dashboard :projects="projectsRenderList" :loading="projectsRenderListPending" />
 
     <div class="bg-stone-200 flex-1 rounded">
-      <div class="flex items-center p-2 flex-wrap space-y-2 sm:space-x-4">
+      <div class="flex items-center p-2 flex-wrap space-y-2 sm:space-x-4 h-auto sm:h-16">
         <div class="mr-auto">
           Showing
           {{ " " }}
@@ -29,8 +31,7 @@
         </div>
       </div>
       <ul class="p-2 space-y-4">
-        <spinner v-if="projectsListPending || projectsRenderListPending" />
-        <li v-else v-for="project in projectsRenderList" :key="project.projectId">
+        <li v-for="project in projectsRenderList" :key="project.projectId">
           <project-item :project="project" />
         </li>
         <div class="w-full text-center text-xl p-12" v-if="projectsRenderList?.length == 0">
@@ -52,6 +53,7 @@ const pagination = ref({
 });
 
 const paginationVal = pagination.value;
+// actual showing data range
 const startIndex = computed(() =>
   paginationVal.total === 0
     ? 0
@@ -81,9 +83,7 @@ const {
   error,
   pending: projectsListPending,
 } = await useFetch("/api/projects", {
-  query: {
-    updatedSince: dateStr,
-  },
+  query: { updatedSince: dateStr },
 });
 if (error.value) {
   throw createError({
@@ -119,13 +119,22 @@ const { data: projectsRenderList, pending: projectsRenderListPending } =
       const cacheIndexArr: { index: number; projectId: number }[] = [];
       const projectsMapVal = projectsMap.value;
 
-      const idArr = projectIdList.value?.slice(startIndex.value - 1, endIndex.value);
+      const idArr = projectIdList.value?.slice(
+        startIndex.value - 1,
+        endIndex.value
+      );
 
       if (idArr) {
         // create a parallel request
         const promiseArr = idArr.map((projectId, index) => {
           if (projectsMapVal.has(projectId)) {
-            return Promise.resolve(projectsMapVal.get(projectId)!);
+            // return Promise.resolve(projectsMapVal.get(projectId)!);
+            // mock a delay
+            return new Promise((resolve: (arg0: Project) => void) => {
+              setTimeout(() => {
+                resolve(projectsMapVal.get(projectId)!);
+              }, 100);
+            });
           } else {
             cacheIndexArr.push({ index, projectId });
             return $fetch(`/api/projects/${projectId}`);
@@ -146,4 +155,23 @@ const { data: projectsRenderList, pending: projectsRenderListPending } =
       watch: [startIndex, endIndex],
     }
   );
+
+// preload and cache next page's data
+watch(endIndex, (newVal) => {
+  const idArr = projectIdList.value?.slice(
+    newVal,
+    Math.min(newVal + pagination.value.pageSize, pagination.value.total)
+  );
+
+  if (Array.isArray(idArr)) {
+    idArr.forEach(async (projectId) => {
+      if (!projectsMap.value.has(projectId)) {
+        const data = await $fetch(`/api/projects/${projectId}`);
+        if (data) {
+          projectsMap.value.set(projectId, data);
+        }
+      }
+    });
+  }
+});
 </script>

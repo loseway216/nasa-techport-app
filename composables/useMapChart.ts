@@ -1,12 +1,7 @@
 import * as echarts from "echarts";
-import type { Project } from "~/types";
+import type { MapData, Project } from "~/types";
 
 type EChartsOption = echarts.EChartsOption;
-
-interface MapData {
-  name: string;
-  value: number;
-}
 
 export const useMapChart = (
   projects: Ref<Project[] | null>,

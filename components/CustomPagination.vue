@@ -36,7 +36,7 @@
       <option value="25">25</option>
       <option value="50">50</option>
     </select>
-    <span class="hidden sm:inline-block"> items per page </span>
+    <span class="hidden sm:inline-block">items</span>
   </div>
 </template>
 
