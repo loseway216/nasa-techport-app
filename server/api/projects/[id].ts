@@ -1,4 +1,4 @@
-import type { Projects } from "~/types";
+import type { Project } from "~/types";
 
 export default defineEventHandler(async (event) => {
   const id = parseInt(event.context.params!.id) as number;
@@ -10,7 +10,15 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const data: Projects = await $fetch(`${process.env.NASA_API}/projects/${id}`);
-  console.log(data);
-  return "all good";
+  const data: { project: Project } = await $fetch(
+    `${process.env.NASA_API}/projects/${id}`
+  );
+
+  console.log(
+    new Date().getMinutes(),
+    new Date().getMilliseconds(),
+    data.project.projectId
+  );
+
+  return data.project;
 });
