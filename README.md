@@ -1,18 +1,20 @@
-# Nuxt 3 Minimal Starter
+# NASA TechPort Projects Viewer
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+The live demo at right is a mobile sized view. Please copy the live demo link and open it in a new tab for the best experience.
 
 ## Features
 
+- Nuxt.js + tailwindcss
 - add data-driven charts analytics
-- parallel requests and caching
-- encapsulate client-side pagination and other reusable components
+- parallel data requests and caching optimizations
+- client-side pagination and other reusable components
+- reusable charts rendering hooks
 - responsive design for desktop and mobile
 - unit tests and end-to-end tests
 
 ## Setup
 
-Make sure to install the dependencies:
+If this live demo is not working, please clone [this repository on Github](https://github.com/loseway216/nasa-techport-app) and run the following commands in the project root directory.
 
 ```bash
 # npm
@@ -45,39 +47,3 @@ yarn dev
 # bun
 bun run dev
 ```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.

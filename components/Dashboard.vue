@@ -1,6 +1,6 @@
 <template>
   <div class="mb-4 min-h-128">
-    <client-only class="text-white flex items-center justify-center">
+    <client-only class="text-white flex items-center justify-center" fallback="Loading charts...">
       <div class="min-h-128 grid sm:grid-rows-2 sm:grid-cols-4 grid-cols-1 sm:gap-4 gap-2">
         <v-chart class="bg-stone-300 shadow rounded h-full w-full sm:row-span-full sm:col-span-2 min-h-64 sm:min-h-0"
           :option="mapOption" autoresize />

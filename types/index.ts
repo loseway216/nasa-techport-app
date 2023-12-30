@@ -157,4 +157,5 @@ interface Country {
 export interface MapData {
   name: string;
   value: number;
+  color?: string;
 }
