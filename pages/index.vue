@@ -1,61 +1,63 @@
 <template>
-  <div class="bg-stone-200 flex-1 rounded">
-    <div class="flex items-center p-2 border-b border-b-stone-400">
-      <div>
-        Showing
-        {{ " " }}
-        <span class="font-medium">{{ startIndex }}</span>
-        {{ " " }}
-        to
-        {{ " " }}
-        <span class="font-medium">{{ endIndex }}</span>
-        {{ " " }}
-        of
-        {{ " " }}
-        <span class="font-medium">{{ pagination.total }}</span>
-        {{ " " }}
-        results
+  <div>
+    <spinner v-if="projectsListPending || projectsRenderListPending" />
+
+    <dashboard :projects="projectsRenderList" :loading="projectsRenderListPending" />
+
+    <div class="bg-stone-200 flex-1 rounded">
+      <div class="flex items-center p-2 flex-wrap space-y-2 sm:space-x-4 h-auto sm:h-16">
+        <div class="mr-auto">
+          Showing
+          {{ " " }}
+          <span class="font-medium">{{ startIndex }}</span>
+          {{ " " }}
+          to
+          {{ " " }}
+          <span class="font-medium">{{ endIndex }}</span>
+          {{ " " }}
+          of
+          {{ " " }}
+          <span class="font-medium">{{ pagination.total }}</span>
+          {{ " " }}
+          results
+        </div>
+        <custom-pagination :pagination="pagination" @change="listChange" />
+        <div class="ml-0 sm:ml-auto">
+          Show last
+          <input
+            class="bg-white w-16 pl-2 py-1 border border-slate-300 rounded shadow-sm focus:outline-none focus:border-slate-500 focus:ring-slate-500 focus:ring-1"
+            type="number" v-model.lazy="interval" />
+          days' projects
+        </div>
       </div>
-      <custom-pagination :pagination="pagination" @change="listChange" />
-      <div>
-        Show last
-        <input
-          class="bg-white w-16 pl-2 py-1 border border-slate-300 rounded shadow-sm focus:outline-none focus:border-slate-500 focus:ring-slate-500 focus:ring-1"
-          type="number"
-          v-model.lazy="interval"
-        />
-        days' projects
-      </div>
+      <ul class="p-2 space-y-4">
+        <li v-for="project in projectsRenderList" :key="project.projectId">
+          <project-item :project="project" />
+        </li>
+        <div class="w-full text-center text-xl p-12" v-if="projectsRenderList?.length == 0">
+          No results found. Please change the interval.
+        </div>
+      </ul>
     </div>
-    <ul class="p-4 space-y-4">
-      <spinner v-if="projectsListPending || projectsRenderListPending" />
-      <li v-else v-for="project in projectsRenderList" :key="project.projectId">
-        <project-item :project="project" />
-      </li>
-    </ul>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { Project } from "~/types";
 
-// init projects map to cache projects data
-const projectsMap = useState<Map<number, Project>>(
-  "projectsMap",
-  () => new Map()
-);
+// pagination data and handler
 const pagination = ref({
   total: 0,
   pageNumber: 1,
   pageSize: 10,
 });
-const interval = ref(7);
-const dateStr = computed(() => convertDateStr(interval.value));
 
-// computed pagination data
 const paginationVal = pagination.value;
-const startIndex = computed(
-  () => (paginationVal.pageNumber - 1) * paginationVal.pageSize + 1
+// actual showing data range
+const startIndex = computed(() =>
+  paginationVal.total === 0
+    ? 0
+    : (paginationVal.pageNumber - 1) * paginationVal.pageSize + 1
 );
 const endIndex = computed(() =>
   paginationVal.pageNumber * paginationVal.pageSize > paginationVal.total
@@ -63,18 +65,25 @@ const endIndex = computed(() =>
     : paginationVal.pageNumber * paginationVal.pageSize
 );
 
-// computed charts data
+function listChange(pageNumber: number, pageSize: number) {
+  pagination.value.pageNumber = pageNumber;
+  pagination.value.pageSize = pageSize;
+}
+
+// interval data
+const interval = ref(7);
+const dateStr = computed(() => convertDateStr(interval.value));
 
 // get projects list in the last 7 days
 // but /api/projects return almost nothing except id
+// so we need to request project detail by id manually
+const projectIdList = ref<number[]>([]);
 const {
   data: projectsList,
   error,
   pending: projectsListPending,
 } = await useFetch("/api/projects", {
-  query: {
-    updatedSince: dateStr,
-  },
+  query: { updatedSince: dateStr },
 });
 if (error.value) {
   throw createError({
@@ -83,18 +92,25 @@ if (error.value) {
   });
 }
 if (projectsList.value) {
+  projectIdList.value = projectsList.value.projectIdList;
   pagination.value.pageNumber = 1;
-  pagination.value.total = projectsList.value.totalCount || 0;
+  pagination.value.total = projectsList.value.totalCount;
 }
 // update pagination data when projectsList change
 watch(projectsList, (newVal) => {
   if (newVal) {
+    projectIdList.value = newVal.projectIdList;
     pagination.value.pageNumber = 1;
-    pagination.value.total = newVal.totalCount || 0;
+    pagination.value.total = newVal.totalCount;
   }
 });
 
-// request project detail and cache it
+// init projects map to cache projects data
+const projectsMap = useState<Map<number, Project>>(
+  "projectsMap",
+  () => new Map()
+);
+// wrap multiple requests in one promise
 const { data: projectsRenderList, pending: projectsRenderListPending } =
   useAsyncData(
     "projects-list",
@@ -103,15 +119,22 @@ const { data: projectsRenderList, pending: projectsRenderListPending } =
       const cacheIndexArr: { index: number; projectId: number }[] = [];
       const projectsMapVal = projectsMap.value;
 
-      const idArr = projectsList.value?.projects
-        .slice(startIndex.value - 1, endIndex.value)
-        .map((project) => project.projectId);
+      const idArr = projectIdList.value?.slice(
+        startIndex.value - 1,
+        endIndex.value
+      );
 
       if (idArr) {
         // create a parallel request
         const promiseArr = idArr.map((projectId, index) => {
           if (projectsMapVal.has(projectId)) {
-            return Promise.resolve(projectsMapVal.get(projectId)!);
+            // return Promise.resolve(projectsMapVal.get(projectId)!);
+            // mock a delay
+            return new Promise((resolve: (arg0: Project) => void) => {
+              setTimeout(() => {
+                resolve(projectsMapVal.get(projectId)!);
+              }, 100);
+            });
           } else {
             cacheIndexArr.push({ index, projectId });
             return $fetch(`/api/projects/${projectId}`);
@@ -133,8 +156,22 @@ const { data: projectsRenderList, pending: projectsRenderListPending } =
     }
   );
 
-function listChange(pageNumber: number, pageSize: number) {
-  pagination.value.pageNumber = pageNumber;
-  pagination.value.pageSize = pageSize;
-}
+// preload and cache next page's data
+watch(endIndex, (newVal) => {
+  const idArr = projectIdList.value?.slice(
+    newVal,
+    Math.min(newVal + pagination.value.pageSize, pagination.value.total)
+  );
+
+  if (Array.isArray(idArr)) {
+    idArr.forEach(async (projectId) => {
+      if (!projectsMap.value.has(projectId)) {
+        const data = await $fetch(`/api/projects/${projectId}`);
+        if (data) {
+          projectsMap.value.set(projectId, data);
+        }
+      }
+    });
+  }
+});
 </script>

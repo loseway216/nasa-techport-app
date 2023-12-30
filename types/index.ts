@@ -24,6 +24,7 @@ export interface Project {
   programManagers: Contact[];
   projectManagers: Contact[];
   principalInvestigators: Contact[];
+  coInvestigators: Contact[];
   website: string;
   libraryItems: LibraryItem[];
   transitions: [];
@@ -40,6 +41,7 @@ export interface Project {
   };
   leadOrganization: Organization;
   supportingOrganizations: Organization[];
+  coFundingPartners: Organization[];
   statesWithWork: {
     abbreviation: string;
     country: Country;
@@ -51,9 +53,10 @@ export interface Project {
   releaseStatusString: string;
   endDateString: string;
   startDateString: string;
+  viewCount: number;
 }
 
-interface Organization {
+export interface Organization {
   acronym: string;
   canUserEdit: boolean;
   city: string;
@@ -63,15 +66,25 @@ interface Organization {
   linkCount: number;
   organizationId: number;
   organizationName: string;
-  organizationType: string;
+  organizationType: OrganizationType;
   stateTerritory: {
     abbreviation: string;
+    countryId: number;
+    name: string;
+    stateTerritoryId: number;
     country: Country;
   };
   stateTerritoryId: number;
   naorganization: boolean;
   organizationTypePretty: string;
 }
+
+export type OrganizationType =
+  | "Academia"
+  | "Industry"
+  | "International Space Agency"
+  | "Non-profit Institution"
+  | "Other US Government";
 
 interface TaxonomyNode {
   taxonomyNodeId: number;
@@ -139,4 +152,9 @@ interface Country {
   abbreviation: string;
   countryId: number;
   name: string;
+}
+
+export interface MapData {
+  name: string;
+  value: number;
 }

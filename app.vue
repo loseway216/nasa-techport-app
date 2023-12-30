@@ -23,19 +23,16 @@ token.value = await $fetch("/api/token");
   filter: blur(1rem);
 }
 
-/* html {
-  font-family: "Open Sans", "Verdana", "Helvetica", sans-serif;
-} */
+body {
+  background: #000;
+}
 
 #__nuxt {
-  background-image: linear-gradient(
-      to right bottom,
+  background: linear-gradient(to right bottom,
       rgba(0, 0, 0, 0.5),
-      rgba(0, 0, 0, 0.1)
-    ),
-    url("/assets/images/blue-marble-4col.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
+      rgba(0, 0, 0, 0.1)), url("/assets/images/blue-marble-4col.jpg") center top no-repeat;
+  background-attachment: fixed;
+  background-size: 100% auto;
   min-height: 100vh;
   display: flex;
   flex-direction: column;

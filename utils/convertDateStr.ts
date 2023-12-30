@@ -2,8 +2,6 @@ const today = new Date();
 
 // today - 7 days = '2023-12-25'
 export function convertDateStr(interval: number) {
-  console.log(interval);
-
   if (Number.isNaN(interval)) {
     return "";
   }
