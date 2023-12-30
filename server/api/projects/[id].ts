@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const data: { project: Project } = await $fetch(
-    `${process.env.NASA_API}/projects/${id}`
+    `https://techport.nasa.gov/api/projects/${id}`
   );
 
   // console.log(data.project.projectId);

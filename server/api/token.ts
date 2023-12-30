@@ -1,3 +1,3 @@
 export default defineEventHandler(async () => {
-  return await $fetch(`${process.env.NASA}/generateToken`);
+  return await $fetch(`https://techport.nasa.gov/generateToken`);
 });
