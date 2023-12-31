@@ -1,3 +1,8 @@
+export interface Pagination {
+  total: number;
+  pageNumber: number;
+  pageSize: number;
+}
 export interface Projects {
   projects: Project[];
   totalCount: number;

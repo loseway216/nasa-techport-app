@@ -4,13 +4,12 @@ The live demo at right is a mobile sized view. Please copy the live demo link an
 
 ## Features
 
-- Nuxt.js + tailwindcss
-- add data-driven charts analytics
+- Nuxt.js + tailwindcss + Vitest + echarts
+- data-driven charts analytics
 - parallel data requests and caching optimizations
 - client-side pagination and other reusable components
-- reusable charts rendering hooks
 - responsive design for desktop and mobile
-- unit tests and end-to-end tests
+- tests for components, pages, composables and utils
 
 ## Setup
 
@@ -46,4 +45,21 @@ yarn dev
 
 # bun
 bun run dev
+```
+
+## Test
+
+```bash
+
+# npm
+npm run test
+
+# pnpm
+pnpm run test
+
+# yarn
+yarn test
+
+# bun
+bun run test
 ```

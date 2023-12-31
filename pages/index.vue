@@ -43,135 +43,14 @@
 </template>
 
 <script setup lang="ts">
-import type { Project } from "~/types";
-
 // pagination data and handler
-const pagination = ref({
-  total: 0,
-  pageNumber: 1,
-  pageSize: 10,
-});
+const { pagination, startIndex, endIndex, listChange } = usePagination();
 
-const paginationVal = pagination.value;
-// actual showing data range
-const startIndex = computed(() =>
-  paginationVal.total === 0
-    ? 0
-    : (paginationVal.pageNumber - 1) * paginationVal.pageSize + 1
-);
-const endIndex = computed(() =>
-  paginationVal.pageNumber * paginationVal.pageSize > paginationVal.total
-    ? paginationVal.total
-    : paginationVal.pageNumber * paginationVal.pageSize
-);
-
-function listChange(pageNumber: number, pageSize: number) {
-  pagination.value.pageNumber = pageNumber;
-  pagination.value.pageSize = pageSize;
-}
-
-// interval data
-const interval = ref(7);
-const dateStr = computed(() => convertDateStr(interval.value));
-
-// get projects list in the last 7 days
-// but /api/projects return almost nothing except id
-// so we need to request project detail by id manually
-const projectIdList = ref<number[]>([]);
+// projects data
 const {
-  data: projectsList,
-  error,
-  pending: projectsListPending,
-} = await useFetch("/api/projects", {
-  query: { updatedSince: dateStr },
-});
-if (error.value) {
-  throw createError({
-    statusCode: error.value.statusCode,
-    message: error.value.message,
-  });
-}
-if (projectsList.value) {
-  projectIdList.value = projectsList.value.projectIdList;
-  pagination.value.pageNumber = 1;
-  pagination.value.total = projectsList.value.totalCount;
-}
-// update pagination data when projectsList change
-watch(projectsList, (newVal) => {
-  if (newVal) {
-    projectIdList.value = newVal.projectIdList;
-    pagination.value.pageNumber = 1;
-    pagination.value.total = newVal.totalCount;
-  }
-});
-
-// init projects map to cache projects data
-const projectsMap = useState<Map<number, Project>>(
-  "projectsMap",
-  () => new Map()
-);
-// wrap multiple requests in one promise
-const { data: projectsRenderList, pending: projectsRenderListPending } =
-  useAsyncData(
-    "projects-list",
-    async () => {
-      let result: Project[] = [];
-      const cacheIndexArr: { index: number; projectId: number }[] = [];
-      const projectsMapVal = projectsMap.value;
-
-      const idArr = projectIdList.value?.slice(
-        startIndex.value - 1,
-        endIndex.value
-      );
-
-      if (idArr) {
-        // create a parallel request
-        const promiseArr = idArr.map((projectId, index) => {
-          if (projectsMapVal.has(projectId)) {
-            // return Promise.resolve(projectsMapVal.get(projectId)!);
-            // mock a delay
-            return new Promise((resolve: (arg0: Project) => void) => {
-              setTimeout(() => {
-                resolve(projectsMapVal.get(projectId)!);
-              }, 100);
-            });
-          } else {
-            cacheIndexArr.push({ index, projectId });
-            return $fetch(`/api/projects/${projectId}`);
-          }
-        });
-
-        result = await Promise.all(promiseArr);
-
-        // cache projects
-        cacheIndexArr.forEach(({ index, projectId }) => {
-          projectsMapVal.set(projectId, result[index]);
-        });
-      }
-
-      return result;
-    },
-    {
-      watch: [startIndex, endIndex],
-    }
-  );
-
-// preload and cache next page's data
-watch(endIndex, (newVal) => {
-  const idArr = projectIdList.value?.slice(
-    newVal,
-    Math.min(newVal + pagination.value.pageSize, pagination.value.total)
-  );
-
-  if (Array.isArray(idArr)) {
-    idArr.forEach(async (projectId) => {
-      if (!projectsMap.value.has(projectId)) {
-        const data = await $fetch(`/api/projects/${projectId}`);
-        if (data) {
-          projectsMap.value.set(projectId, data);
-        }
-      }
-    });
-  }
-});
+  interval,
+  projectsRenderList,
+  projectsRenderListPending,
+  projectsListPending,
+} = await useProjects(pagination, startIndex, endIndex, listChange);
 </script>

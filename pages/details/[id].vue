@@ -117,10 +117,10 @@
 
 <script setup lang="ts">
 import VChart from "vue-echarts";
-import type { Project } from "~/types";
 
 const router = useRouter();
 const route = useRoute();
+
 // prevent user input an invalid projectId manually
 definePageMeta({
   validate: async (route) => {
@@ -128,36 +128,12 @@ definePageMeta({
     return /^\d+$/.test(route.params.id as string);
   },
 });
-const projectId = computed(() => Number(route.params.id));
 
-// init project detail
-const projectDetail = ref<Project>();
-const projectsMap = useState<Map<number, Project>>("projectsMap");
-
-//if the project detail is cached, use it
-if (projectsMap.value?.has(projectId.value)) {
-  projectDetail.value = projectsMap.value.get(projectId.value);
-}
-// request the project detail by id if it's not cached
-else {
-  const { data, pending, error } = await useFetch<Project>(
-    `/api/projects/${projectId.value}`
-  );
-  if (error.value) {
-    throw createError({
-      statusCode: error.value.statusCode,
-      message: error.value.message,
-    });
-  }
-  if (data.value) {
-    projectDetail.value = data.value;
-  }
-}
+// get project detail from cache or request
+const { projectDetail } = await useProjectDetail(Number(route.params.id));
 
 // compute status color
-const statusClass = computed(() =>
-  convertStatusClass(projectDetail.value!.statusDescription)
-);
+const statusClass = computed(() => convertStatusClass(projectDetail.value!.statusDescription));
 
 // map chart
 const projects = computed(() => [projectDetail.value!]);
