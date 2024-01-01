@@ -11,28 +11,27 @@
   "tasks": {
     "build": {
       "name": "build",
-      "command": "pnpm build",
-      "runAtStart": false
+      "command": "pnpm build"
     },
     "dev": {
       "name": "dev",
       "command": "pnpm dev",
-      "runAtStart": true
+      "runAtStart": true,
+      "preview": {
+        "port": 3000
+      }
     },
     "generate": {
       "name": "generate",
-      "command": "pnpm generate",
-      "runAtStart": false
+      "command": "pnpm generate"
     },
     "preview": {
       "name": "preview",
-      "command": "pnpm preview",
-      "runAtStart": false
+      "command": "pnpm preview"
     },
     "postinstall": {
       "name": "postinstall",
-      "command": "pnpm postinstall",
-      "runAtStart": false
+      "command": "pnpm postinstall"
     }
   }
 }
