@@ -9,7 +9,7 @@ The live demo at right is a mobile sized view. Please copy the live demo link an
 - parallel data requests and caching optimizations
 - client-side pagination and other reusable components
 - responsive design for desktop and mobile
-- tests for components, pages, composables and utils
+- tests with Vitest
 
 ## Setup
 

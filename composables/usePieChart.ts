@@ -1,7 +1,5 @@
-import * as echarts from "echarts";
+import type { EChartsOption } from "echarts/types/dist/shared";
 import type { MapData, Project } from "~/types";
-
-type EChartsOption = echarts.EChartsOption;
 
 export const usePieChart = (projects: Ref<Project[] | null>) => {
   const option = computed<EChartsOption>(() => {

@@ -1,7 +1,5 @@
-import * as echarts from "echarts";
+import type { EChartsOption } from "echarts/types/dist/shared";
 import type { Project } from "~/types";
-
-type EChartsOption = echarts.EChartsOption;
 
 const xAxisData = [
   "TRL 1",

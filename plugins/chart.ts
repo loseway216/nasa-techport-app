@@ -1,28 +1,30 @@
-import * as echarts from "echarts";
-import { BarChart, MapChart, PieChart } from "echarts/charts";
+import { BarChart, LineChart, MapChart, PieChart } from "echarts/charts";
 import {
   GridComponent,
   LegendComponent,
   TitleComponent,
   TooltipComponent,
+  VisualMapComponent,
 } from "echarts/components";
-import { use } from "echarts/core";
+import { registerMap, use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import USAJson from "~/assets/USA.json";
 
-export default defineNuxtPlugin(() => {
+export default defineNuxtPlugin(({ vueApp }) => {
   use([
     CanvasRenderer,
     GridComponent,
     TooltipComponent,
     LegendComponent,
     TitleComponent,
+    VisualMapComponent,
     BarChart,
     PieChart,
     MapChart,
+    LineChart,
   ]);
 
-  echarts.registerMap("USA", USAJson as any, {
+  registerMap("USA", USAJson as any, {
     Alaska: {
       left: -131,
       top: 25,
