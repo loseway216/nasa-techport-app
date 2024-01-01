@@ -32,6 +32,10 @@
     "postinstall": {
       "name": "postinstall",
       "command": "pnpm postinstall"
+    },
+    "test": {
+      "name": "test",
+      "command": "pnpm test"
     }
   }
 }
