@@ -1,6 +1,8 @@
 <template>
   <div>
-    <spinner v-if="projectsListPending || projectsRenderListPending" />
+    <client-only>
+      <spinner v-if="projectsListPending || projectsRenderListPending" />
+    </client-only>
 
     <dashboard :projects="projectsRenderList" :loading="projectsRenderListPending" />
 
