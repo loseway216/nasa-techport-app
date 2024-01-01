@@ -16,6 +16,12 @@ export const useAreaChart = (projects: Ref<Project[] | null>) => {
       TX08: 0,
       TX09: 0,
       TX10: 0,
+      TX11: 0,
+      TX12: 0,
+      TX13: 0,
+      TX14: 0,
+      TX15: 0,
+      TX16: 0,
     };
     // computed trl data
     projects.value?.forEach((project) => {
@@ -54,7 +60,12 @@ export const useAreaChart = (projects: Ref<Project[] | null>) => {
           "TX08",
           "TX09",
           "TX10",
-          ,
+          "TX11",
+          "TX12",
+          "TX13",
+          "TX14",
+          "TX15",
+          "TX16",
         ],
       },
       yAxis: {

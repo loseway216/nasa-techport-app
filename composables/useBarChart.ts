@@ -11,6 +11,9 @@ export const useBarChart = (projects: Ref<Project[] | null>) => {
       "International Space Agency": 0,
       "Non-profit Institution": 0,
       "Other US Government": 0,
+      FFRDC_2fUARC: 0,
+      NASA_Center: 0,
+      Other_US_Government: 0,
     };
     // computed organization data
     projects.value?.forEach((project) => {

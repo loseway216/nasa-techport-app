@@ -40,7 +40,7 @@ export const useProjects = async (
 
   // wrap multiple requests in one promise
   const { data: projectsRenderList, pending: projectsRenderListPending } =
-    useAsyncData(
+    await useAsyncData(
       "projects-list",
       async () => {
         let result: Project[] = [];

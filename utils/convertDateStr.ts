@@ -1,8 +1,9 @@
 const today = new Date();
 
 // today - 7 days = '2023-12-25'
+// convert a interval number to YYYY-MM-DD string
 export function convertDateStr(interval: number) {
-  if (Number.isNaN(interval)) {
+  if (Number.isNaN(interval) || interval < 0) {
     return "";
   }
 
